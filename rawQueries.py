@@ -1,13 +1,15 @@
 import pprint
 from pymongo import MongoClient
 from bson.regex import Regex
+import os
 
 # Create the excel Sheets for the respective graph data
 
 
 # Connect to your MongoDB server
 campaignId = "6448fd9329b3cbd2f1b3f22e"
-client = MongoClient('localhost', 27017)
+# client = MongoClient('localhost', 27017)
+client = os.environ.get("mongoUri", MongoClient('localhost', 27017) )
 db = client['srgw_data_store']
 
 
@@ -141,10 +143,13 @@ def generateDemographicData(campaignId, product, demographic):
 def demographicData(demographics, products):
     print("=====GENERATING DATA FOR PRODUCTS: ", products , "=====")
     finalResponse = {}
+
     for p in products: 
         print("PRODUCT: "+ p)
+
         demographicDictonaryArray = {}
         demographicDictonary = {}
+
         for d in demographics:
             print("-----------------------")
             print("PRODUCT " + p + " || DEMOGRAPHIC: "+ d)
@@ -152,7 +157,6 @@ def demographicData(demographics, products):
             print("-----------------------")
             demographicDictonary[d] = data
             pprint.pprint(demographicDictonary)
-
 
         response = {"product":p, "demographics":demographicDictonary}
         pprint.pprint(response)
