@@ -8,8 +8,14 @@ import os
 
 # Connect to your MongoDB server
 campaignId = "6448fd9329b3cbd2f1b3f22e"
+
+if os.environ.get("mongoUri"):
+    client = MongoClient(os.environ.get("mongoUri"))
+else:
+    client = MongoClient('localhost', 27017) 
 # client = MongoClient('localhost', 27017)
-client = MongoClient( os.environ.get("mongoUri"), 'localhost', 27017) 
+# uri = os.environ.get("mongoUri", ('localhost', 27017))
+
 print(client)
 db = client['srgw_data_store']
 
