@@ -10,6 +10,7 @@ import os
 campaignId = "6448fd9329b3cbd2f1b3f22e"
 # client = MongoClient('localhost', 27017)
 client = os.environ.get("mongoUri", MongoClient('localhost', 27017) )
+print(client)
 db = client['srgw_data_store']
 
 
