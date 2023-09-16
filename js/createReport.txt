@@ -1,0 +1,9 @@
+Create Report 
+mongo --host mongodb.rancardmobility.com --port 27017 srgw_data_store hamperWinnersLocation.js > physicalWinners.csv
+
+Create Local Report 
+mongo srgw_data_store report.js
+
+
+Fetch Report From Server
+scp -r kweku@msg2.rancardmobility.com:report1.csv .

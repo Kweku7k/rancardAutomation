@@ -1,0 +1,16 @@
+{ "_id" : "STAFF", "count" : 3761 } ❌
+{ "_id" : "N/A", "count" : 37742 } ❌
+{ "_id" : "FAIL", "count" : 29141 } 
+{ "_id" : "USED", "count" : 296577 } ✅
+{ "_id" : "IGNORE", "count" : 37368 } ✅
+{ "_id" : "INVALID", "count" : 750284 } ✅
+{ "_id" : "FRAUD", "count" : 13031 } ✅
+{ "_id" : "WIN", "count" : 1201049 }
+{ "_id" : "IGNORED", "count" : 1071735 }
+{ "_id" : "RETRY", "count" : 1865146 } ✅
+
+
+transaction_result:{ $nin: ["STAFF", "FAILED"] },
+
+transaction_result:{ $in: ["RETRY", "FRAUD", "IGNORE", "IGNORED", "USED", "INVALID"] },
+

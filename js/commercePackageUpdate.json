@@ -1,0 +1,119 @@
+{
+    "name": "Standard Package",
+                "price": 500.0,
+                "description": "MultiPro",
+                "features": [
+                    Brand listing on diem web multi-store (link)
+Brand listing on diem USSD Multi store (*844#)
+60 orders per month
+Personal USSD short code (*844*XXX#)
+Promoted to 5K Customers
+Reports and Analysis
+Working Hours Support (Email, Chat, 1 Hour Response Time, 9am - 5pm)
+
+                ],
+                "channels": [
+                    "Messenger",
+                    "Web",
+                    "Telegram"
+                ],
+                "orderFee": 2.0,
+                "paymentPeriod": 7
+    }
+
+STANDARD
+Brand listing on diem web multi-store (link),
+Brand listing on diem USSD Multi store (*844#),
+60 orders per month,
+Personal USSD short code (*844*XXX#),
+Promoted to 5K Customers,
+Reports and Analysis,
+Working Hours Support (Email, Chat, 1 Hour Response Time, 9am - 5pm)
+
+
+PRO
+Brand listing on diem USSD Multi-store (*844#) and Diem Web Multistore (link),
+Connect up to 2 social channels (Facebook Messenger and Telegram),
+Promoted to 5k Customers,
+Personal USSD code (*844*XXX#) and Webstore,
+300 messaging credits for Bulk Sms Marketing,
+100 Orders per month,
+Reports and Analysis,
+5 Days Operational Support (Email, chat, 1-Hour Response Time, 24/5)
+
+PREMIUM
+Brand listing on diem USSD Multi-store (*844#) and Multistore (link),
+Promoted to 2M customers,
+Personal USSD Short code (*844*XXX#),
+and Webstore,
+Connect to all social channels,
+(FB Messenger, Telegram, WhatsApp,
+Get up to 2000 Messaging Credits for Bulk SMS Marketing,
+Unlimited number of Orders,
+Dedicated account manager,
+14-day campaign booster,
+Reports and analysis,
+Professional Support (Email, Chat, 25 mins Response Time, 24/7)
+
+// MultiStandardPackage
+{
+    "name": "Standard Multi Package",
+                "price": 500.0,
+                "description": "MultiPro",
+                "features": [
+                    "Up to 3 brands", 
+                    "Brands listing on diem web Multistore (link) and Diem USSD Multistore(*844#)",
+                    "150 orders per month (Across all Accounts)",
+                    "Promoted to 5k customers",
+                    "Personal USSD short code (*844*XXX#)",
+                    "Reports and Analysis",
+                    "Working Hours Support (Email, Chat, 1 Hour Response Time, 9am - 5pm)"
+                ],
+                "channels": [],
+                "orderFee": 2.0,
+                "paymentPeriod": 7
+}
+
+// MultiProPackage
+{
+    "name": "Pro Multi Package",
+    "price": 2000.0,
+    "description": "MultiPro - 5 brands",
+    "features": [
+        "Up to 5 brands",
+        "Brands listing on diem web multi-store (link) and Diem USSD and Web Multi-store",        
+        "500 orders per month"
+        "Promoted to 10k customers",
+        "Connect up to 3 social channels (Facebook Messenger, Whatsapp and Telegram)",
+        "Personal USSD shortcode (*844*XXX#) and Webstore",
+        "Get up to 650 Messaging Credits for Bulk SMS Marketing",
+        "5 days operational support (Email, chat, 1-Hour Response Time, 24/5)"  
+    ],
+    "channels": [],
+    "orderFee": 2.0,
+    "paymentPeriod": 30
+}
+
+{
+    "name": "Premium Multi Package",
+    "price": 2000.0,
+    "description": "MultiPro - 5 brands",
+    "features": [
+        "Up to 8 Brands",
+        "Brands listing on diem web multi-store (link) and Diem USSD and Web Multi-store",
+        "Promoted to 2M customers",
+        "Dedicated USSD Short code (*844*XXX#)",
+        "Connect to all social channels(FB Messenger, WhatsApp, Telegram)",
+        "Get up to 2000 Messaging Credits for Bulk SMS Marketing",
+        "Unlimited Number of Orders",
+        "Dedicated account manager",
+        "14-day campaign booster",
+        "Reports and analysis",
+        "Professional Support (Email, Chat, 25 mins Response Time, 24/7)"
+    ],
+    "channels": ["Messenger",
+    "Telegram",
+    "Whatsapp"],
+    "orderFee": 2.0,
+    "paymentPeriod": 30
+}
