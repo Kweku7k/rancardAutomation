@@ -160,15 +160,15 @@ def demographicData(demographics, products):
         demographicDictonaryArray = {}
         demographicDictonary = {}
 
+        response = {p:demographicDictonary}
         for d in demographics:
             print("-----------------------")
             print("PRODUCT " + p + " || DEMOGRAPHIC: "+ d)
             data = generateDemographicData(campaignId,p, d)
             print("-----------------------")
             demographicDictonary[d] = data
-            pprint.pprint(demographicDictonary)
+            # pprint.pprint(demographicDictonary)
 
-        response = {"product":p, "demographics":demographicDictonary}
         pprint.pprint(response)
         finalResponse[p] = response
         finalResponseArray.append(response)
@@ -191,17 +191,17 @@ print(demographicData(["ageRange", "gender", "region"], ["Pepsodent", "Geisha","
 
 
 # Create a pandas ExcelWriter object to write to an XLSX file (Excel format)
-with pd.ExcelWriter('unilever.xlsx', engine='xlsxwriter') as writer:
-    # Create two DataFrames with dummy data
-    df1 = pd.DataFrame({'Region': [1, 2, 3, 4],
-                        'Pepsodent': ['A', 'B', 'C', 'D'],
-                        'Geisha': ['A', 'B', 'C', 'D'],
-                        'Key': ['A', 'B', 'C', 'D'],
-                        })
+# with pd.ExcelWriter('unilever.xlsx', engine='xlsxwriter') as writer:
+#     # Create two DataFrames with dummy data
+#     df1 = pd.DataFrame({'Region': [1, 2, 3, 4],
+#                         'Pepsodent': ['A', 'B', 'C', 'D'],
+#                         'Geisha': ['A', 'B', 'C', 'D'],
+#                         'Key': ['A', 'B', 'C', 'D'],
+#                         })
 
-    df2 = pd.DataFrame({'Sheet2_Column1': [5, 6, 7, 8],
-                        'Sheet2_Column2': ['E', 'F', 'G', 'H']})
+#     df2 = pd.DataFrame({'Sheet2_Column1': [5, 6, 7, 8],
+#                         'Sheet2_Column2': ['E', 'F', 'G', 'H']})
 
-    # Write each DataFrame to a different sheet in the XLSX file
-    df1.to_excel(writer, sheet_name='Sheet1', index=False)
-    df2.to_excel(writer, sheet_name='Sheet2', index=False)
+#     # Write each DataFrame to a different sheet in the XLSX file
+#     df1.to_excel(writer, sheet_name='Sheet1', index=False)
+#     df2.to_excel(writer, sheet_name='Sheet2', index=False)
