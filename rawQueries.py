@@ -2,6 +2,8 @@ import pprint
 from pymongo import MongoClient
 from bson.regex import Regex
 import os
+import pandas as pd
+
 
 # Create the excel Sheets for the respective graph data
 
@@ -150,6 +152,7 @@ def generateDemographicData(campaignId, product, demographic):
 def demographicData(demographics, products):
     print("=====GENERATING DATA FOR PRODUCTS: ", products , "=====")
     finalResponse = {}
+    finalResponseArray = []
 
     for p in products: 
         print("PRODUCT: "+ p)
@@ -167,10 +170,14 @@ def demographicData(demographics, products):
 
         response = {"product":p, "demographics":demographicDictonary}
         pprint.pprint(response)
+        finalResponse[p] = response
+        finalResponseArray.append(response)
     # finalResponse = response 
 
-    # pprint.pprint(finalResponse)
-    return "response"
+    print("========")
+    pprint.pprint(finalResponseArray)
+    print("========")
+    return response
 
 
 # FIRST_SLIDE
@@ -180,3 +187,21 @@ print(demographicData(["ageRange", "gender", "region"], ["Pepsodent", "Geisha","
 
 
 # generateDemographicData(campaignId, "Pepsodent", "ageRange")
+
+
+
+# Create a pandas ExcelWriter object to write to an XLSX file (Excel format)
+with pd.ExcelWriter('unilever.xlsx', engine='xlsxwriter') as writer:
+    # Create two DataFrames with dummy data
+    df1 = pd.DataFrame({'Region': [1, 2, 3, 4],
+                        'Pepsodent': ['A', 'B', 'C', 'D'],
+                        'Geisha': ['A', 'B', 'C', 'D'],
+                        'Key': ['A', 'B', 'C', 'D'],
+                        })
+
+    df2 = pd.DataFrame({'Sheet2_Column1': [5, 6, 7, 8],
+                        'Sheet2_Column2': ['E', 'F', 'G', 'H']})
+
+    # Write each DataFrame to a different sheet in the XLSX file
+    df1.to_excel(writer, sheet_name='Sheet1', index=False)
+    df2.to_excel(writer, sheet_name='Sheet2', index=False)
