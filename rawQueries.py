@@ -484,4 +484,6 @@ for i in ["Pepsodent", "Geisha", "Key"]:
 pprint.pprint(response)
 # list_to_excel_csv(dataBody,'output.csv')
 
+getRewardData(campaignId)
+
 
