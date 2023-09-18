@@ -1,12 +1,17 @@
+from email import encoders
+from email.message import EmailMessage
+from email.mime.base import MIMEBase
 import pprint
+import smtplib
 from pymongo import MongoClient
 from bson.regex import Regex
 import os
 import pandas as pd
+import csv
 
 
 # Create the excel Sheets for the respective graph data
-
+# GET CAMPAIGN DETAILS - TODO
 
 # Connect to your MongoDB server
 campaignId = "6448fd9329b3cbd2f1b3f22e"
@@ -169,39 +174,250 @@ def demographicData(demographics, products):
             demographicDictonary[d] = data
             # pprint.pprint(demographicDictonary)
 
-        pprint.pprint(response)
+        # pprint.pprint(response)
         finalResponse[p] = response
         finalResponseArray.append(response)
     # finalResponse = response 
 
-    print("========")
-    pprint.pprint(finalResponseArray)
-    print("========")
-    return response
+    # print("========")
+    # pprint.pprint(finalResponseArray)
+    # print("========")
+    return finalResponseArray
 
 
 # FIRST_SLIDE
 # getStatusOfTransactions(campaignId)
 # getRewardData(campaignId)
-print(demographicData(["ageRange", "gender", "region"], ["Pepsodent", "Geisha","Key"]))
+
+products = ["Pepsodent", "Geisha","Key"]
+demographics = ["ageRange", "gender", "region"]
+dataBody = demographicData(demographics, products)
+
+# Specify the file name
+file_name = "dummy_data.csv"
+
+# Create and open the CSV file in write mode
+with open(file_name, mode='w', newline='') as csv_file:
+    pprint.pprint("----------- CSV FILE GENERATION -----------")
+
+    # Create a CSV writer object
+    csv_writer = csv.writer(csv_file)
+    pprint.pprint(dataBody)
+
+    #HEADER 
+    csv_writer.writerow(demographics)
+
+    print("Initiated Array Traverse")
+
+    keys = list(dataBody[0]["Pepsodent"]["ageRange"].keys())
+    values = list(dataBody[0]["Pepsodent"]["ageRange"].values())
+    print(keys)
+    print(values)
+    csv_writer.writerow([dataBody[0]["Pepsodent"]["ageRange"][keys[0]]])
+    
+    # BODY
+    # for d in demographics:
+    #     print("Demographic Selected:" , d)
+    #     for p in products:
+    #         print("Product Selected", p)
+    #         for i in dataBody:
+    #             print("++++")
+    #             for x in i[p]:
+    #                 print(x)
 
 
+    
+
+
+    # # TO GET KEYS, TRAVERSE THIS LIST
+    # for index, value in enumerate(dataBody):  
+    #     print("value")
+    #     print(value)
+    #     currentProduct = dataBody[index]
+    #     for i in currentProduct.keys():
+    #         headers.append(i)
+    
+    # print("------")
+    # # print(headers)
+
+    # for index, value in enumerate([list(dataBody[0]["Pepsodent"]["region"])]):
+    #     datarow = dataBody[0]["Pepsodent"]["region"][index]
+    #     print(datarow)
+    #     csv_writer.writerow(datarow)
+
+    # gender = list(dataBody[0]["Pepsodent"]["gender"])[0]
+    # print(gender)
+
+
+
+
+    
+
+    # pprint.pprint(" CURRENT PRODUCT ")
+    # pprint.pprint(currentProduct)
+
+
+    # for productKey in currentProduct:
+    #     print("Creating Excel Entry for ", productKey)
+    
+    #     headers = []
+
+    #     # headers.append()
+    
+    #     # for index, value in enumerate(product):
+    #     #     print("Creating Excel Entry for", value)
+
+    # #  -----------------
+
+    # # Write the data to the CSV file
+    # for row in data:
+    # csv_writer.writerow(gender)
+
+print(f"CSV file '{file_name}' has been created with dummy data.")
 # generateDemographicData(campaignId, "Pepsodent", "ageRange")
 
+
+def sendAnEmail(title,subject,message, path=None):
+    print("Attempting to send an email")
+    email_sender = 'pay@prestoghana.com'
+    
+    email_password = 'Babebabe123$'
+    email_receiver = ['mr.adumatta@gmail.com']
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+        @font-face {{
+            font-family: 'Plus Jakarta';
+            src: url('PlusJakartaSans-VariableFont_wght.woff2') format('woff2-variations'),
+                url('PlusJakartaSans-Italic-VariableFont_wght.woff2') format('woff2-variations');
+            font-weight: 100 500; /* Adjust font weights based on available weights */
+            font-style: normal;
+        }}
+
+        body {{
+            font-family: 'Plus Jakarta', sans-serif;
+            color:black;
+            margin: auto 10px;
+        }}
+
+        div{{
+            font-family: 'Plus Jakarta', sans-serif;
+            font-weight:200;
+        }}
+
+        </style>
+
+    </head>
+    <body style="margin:auto 10px; color:black; font-family: 'Plus Jakarta', sans-serif;">
+        {message}
+        <h6 style="font-weight:200">This email is powered by <a href='https://prestoghana.com'>PrestoGhana</a></h6>
+    </body>
+    </html>
+    """
+
+    em = EmailMessage()
+    em["From"] = f"{title} <{email_sender}>"
+    em['To'] = email_receiver
+    em['Subject'] = subject
+
+    em.set_content('')  
+    em.add_alternative(html_content, subtype='html')
+
+    if path != None:
+
+        # Assuming 'path' contains the path to your CSV file
+        csv_file_path = path  # Replace with the actual path to your CSV file
+
+        # Create a MIMEBase object to represent the attachment
+        attachment = MIMEBase('application', 'octet-stream')
+        attachment.set_payload(open(csv_file_path, 'rb').read())
+
+        # Encode the attachment and add headers
+        encoders.encode_base64(attachment)
+        attachment.add_header('Content-Disposition', f'attachment; filename="{csv_file_path}"')
+
+        # Add the attachment to your email message (assuming 'em' is your EmailMessage instance)
+        em.attach(attachment)
+        # em.add_attachment(open(path, 'rb').read(), maintype='application', subtype='pdf')
+
+    smtp_server = 'mail.privateemail.com'
+    port = 465
+
+
+    server = smtplib.SMTP_SSL(smtp_server, port)
+    server.login(email_sender, email_password)
+    server.sendmail(email_sender, email_receiver, em.as_string())
+    server.quit()
+    return "Done!"
 
 
 # Create a pandas ExcelWriter object to write to an XLSX file (Excel format)
 # with pd.ExcelWriter('unilever.xlsx', engine='xlsxwriter') as writer:
-#     # Create two DataFrames with dummy data
-#     df1 = pd.DataFrame({'Region': [1, 2, 3, 4],
-#                         'Pepsodent': ['A', 'B', 'C', 'D'],
-#                         'Geisha': ['A', 'B', 'C', 'D'],
-#                         'Key': ['A', 'B', 'C', 'D'],
-#                         })
 
-#     df2 = pd.DataFrame({'Sheet2_Column1': [5, 6, 7, 8],
+#     excelBody = {} #header and values.
+#     print("========")
+#     currentProduct = dataBody[0]
+#     print(dataBody)
+
+#     for product in currentProduct:
+#         print("Creating Excel Entry for " + product)
+#         productDemographics = currentProduct[product]
+#         for key in productDemographics:
+#             currentDemographicKey = key
+#             currentDemographic = productDemographics[key]
+
+#             print("currentDemographicKey", currentDemographicKey)
+#             print("currentDemographic: ", currentDemographic)
+
+#             print("-----product----")
+#             print(product)
+
+#             print("-----header----")
+#             listOfKeys = list(currentDemographic.keys())
+#             print(listOfKeys)
+
+#             print("-----values----")
+#             listOfValues = list(currentDemographic.values())
+#             print(listOfValues)
+#             print(key)
+
+#             excelBody[key] = listOfKeys
+
+#     print("excel", excelBody)
+
+#     # Create two DataFrames with dummy data
+#     # THIS TAKES A KEY AND AN ARRAY! -> SO BUILD ACCORDINGLY.
+#     df1 = pd.DataFrame(excelBody)
+#     df2 = pd.DataFrame({'Region': ["Accra", "Dubai", "Mallam", "Dansoman"],
 #                         'Sheet2_Column2': ['E', 'F', 'G', 'H']})
 
 #     # Write each DataFrame to a different sheet in the XLSX file
 #     df1.to_excel(writer, sheet_name='Sheet1', index=False)
 #     df2.to_excel(writer, sheet_name='Sheet2', index=False)
+
+
+def list_to_excel_csv(data, csv_file):
+    # Create a CSV file in write mode
+    with open(csv_file, mode='w', newline='') as file:
+        writer = csv.writer(file)
+
+        # Write the header row
+        writer.writerow(['Product', 'Age Range', 'Gender', 'Region', 'Count'])
+
+        # Iterate through the list and write data
+        for item in data:
+            for product, values in item.items():
+                for age_range, age_count in values['ageRange'].items():
+                    for gender, gender_count in values['gender'].items():
+                        for region, region_count in values['region'].items():
+                            total_count = age_count + gender_count + region_count
+                            writer.writerow([product, age_range, gender, region, total_count])
+    sendAnEmail("Test", "test", "test", csv_file)
+
+
+list_to_excel_csv(dataBody,'output.csv')
+
+
