@@ -46,21 +46,39 @@ def getAllValuesBasedOnCriteria(array, data, label):
 # --------- END
 
 
-def getStatusOfTransactions(campaignId):
+def getStatusOfTransactions(campaignId, product=None):
     # Define the aggregation pipeline
-    pipeline = [
-        {
-            "$match": {
-                "campaignId": campaignId #ADD NE FIELDS?
+    if product == None:
+        pipeline = [
+            {
+                "$match": {
+                    "campaignId": campaignId #ADD NE FIELDS?
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$status",
+                    "count": {"$sum": 1}
+                }
             }
-        },
-        {
-            "$group": {
-                "_id": "$status",
-                "count": {"$sum": 1}
+        ]
+
+    else:
+        pipeline = [
+            {
+                "$match": {
+                    "campaignId": campaignId, #ADD NE FIELDS?
+                    "product":  Regex(product, "i"),
+
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$status",
+                    "count": {"$sum": 1}
+                }
             }
-        }
-    ]
+        ]
 
     # Execute the aggregation query
     result = list(db.PromoTransaction.aggregate(pipeline))
@@ -81,6 +99,19 @@ def getStatusOfTransactions(campaignId):
     blacklisted = getAllValuesBasedOnCriteria(["SUSPENDED"], data, "Blacklisted Entries")
     winIgnores = getAllValuesBasedOnCriteria(["SUSPENDED"], data, "Win Ignored Entries")
     # unique_winners = len(db[collection_name].distinct("msisdn", query))
+
+    responseBody = {
+        "totalEntries":totalEntries,
+        "totalWins":totalWins,
+        "valid":valid,
+        "invalidEntries":invalidEntries,
+        "blacklisted":blacklisted,
+        "winIgnores":winIgnores
+    }
+
+    print("------responsep-----")
+    pprint.pprint(responseBody)
+    return responseBody
 
 
 def getRewardData(campaignId):
@@ -353,50 +384,51 @@ def sendAnEmail(title,subject,message, path=None):
     server.quit()
     return "Done!"
 
+def pandaXLS():
+    # Create a pandas ExcelWriter object to write to an XLSX file (Excel format)
+    with pd.ExcelWriter('unilever.xlsx', engine='xlsxwriter') as writer:
 
-# Create a pandas ExcelWriter object to write to an XLSX file (Excel format)
-# with pd.ExcelWriter('unilever.xlsx', engine='xlsxwriter') as writer:
+        excelBody = {} #header and values.
+        print("========")
+        for index, value in enumerate(dataBody):
+            currentProduct = dataBody[index]
+            print(dataBody)
 
-#     excelBody = {} #header and values.
-#     print("========")
-#     currentProduct = dataBody[0]
-#     print(dataBody)
+            for product in currentProduct:
+                print("Creating Excel Entry for " + product)
+                productDemographics = currentProduct[product]
+                for key in productDemographics:
+                    currentDemographicKey = key
+                    currentDemographic = productDemographics[key]
 
-#     for product in currentProduct:
-#         print("Creating Excel Entry for " + product)
-#         productDemographics = currentProduct[product]
-#         for key in productDemographics:
-#             currentDemographicKey = key
-#             currentDemographic = productDemographics[key]
+                    print("currentDemographicKey", currentDemographicKey)
+                    print("currentDemographic: ", currentDemographic)
 
-#             print("currentDemographicKey", currentDemographicKey)
-#             print("currentDemographic: ", currentDemographic)
+                    print("-----product----")
+                    print(product)
 
-#             print("-----product----")
-#             print(product)
+                    print("-----header----")
+                    listOfKeys = list(currentDemographic.keys())
+                    print(listOfKeys)
 
-#             print("-----header----")
-#             listOfKeys = list(currentDemographic.keys())
-#             print(listOfKeys)
+                    print("-----values----")
+                    listOfValues = list(currentDemographic.values())
+                    print(listOfValues)
+                    print(key)
 
-#             print("-----values----")
-#             listOfValues = list(currentDemographic.values())
-#             print(listOfValues)
-#             print(key)
+                    excelBody[key] = listOfKeys
 
-#             excelBody[key] = listOfKeys
+        print("excel", excelBody)
 
-#     print("excel", excelBody)
+        # Create two DataFrames with dummy data
+        # THIS TAKES A KEY AND AN ARRAY! -> SO BUILD ACCORDINGLY.
+        df1 = pd.DataFrame(excelBody)
+        df2 = pd.DataFrame({'Region': ["Accra", "Dubai", "Mallam", "Dansoman"],
+                            'Sheet2_Column2': ['E', 'F', 'G', 'H']})
 
-#     # Create two DataFrames with dummy data
-#     # THIS TAKES A KEY AND AN ARRAY! -> SO BUILD ACCORDINGLY.
-#     df1 = pd.DataFrame(excelBody)
-#     df2 = pd.DataFrame({'Region': ["Accra", "Dubai", "Mallam", "Dansoman"],
-#                         'Sheet2_Column2': ['E', 'F', 'G', 'H']})
-
-#     # Write each DataFrame to a different sheet in the XLSX file
-#     df1.to_excel(writer, sheet_name='Sheet1', index=False)
-#     df2.to_excel(writer, sheet_name='Sheet2', index=False)
+        # Write each DataFrame to a different sheet in the XLSX file
+        df1.to_excel(writer, sheet_name='Sheet1', index=False)
+        df2.to_excel(writer, sheet_name='Sheet2', index=False)
 
 
 def list_to_excel_csv(data, csv_file):
@@ -405,19 +437,51 @@ def list_to_excel_csv(data, csv_file):
         writer = csv.writer(file)
 
         # Write the header row
-        writer.writerow(['Product', 'Age Range', 'Gender', 'Region', 'Count'])
+        writer.writerow(["Region","Pepsodent","Geisha", "Key"])
+
+        one, two = data[0]["Pepsodent"].items()
+        print(one, two)
+        # print(items)
+
+        # writer.writerow([dataBody[0]["region"]])
+
+#         # pass demographic
+#         for index, value in enumerate(data):
+#             productBody = dataBody[index]
+#             print(productBody)
+
+#             # get the key
+#             for key, value in productBody.items():
+#                 print("FETCHING", key, value)
+#                 for i, y in value.items():
+#                     print("FIN", i, y)
+#                     print(value["region"])
+            # get the demographic
+            # use demographic as table head
+            # get the demographic passed 
+
+
+            
 
         # Iterate through the list and write data
-        for item in data:
-            for product, values in item.items():
-                for age_range, age_count in values['ageRange'].items():
-                    for gender, gender_count in values['gender'].items():
-                        for region, region_count in values['region'].items():
-                            total_count = age_count + gender_count + region_count
-                            writer.writerow([product, age_range, gender, region, total_count])
-    sendAnEmail("Test", "test", "test", csv_file)
+    #     for item in data:
+    #         for product, values in item.items():
+    #             for age_range, age_count in values['ageRange'].items():
+    #                 for gender, gender_count in values['gender'].items():
+    #                     for region, region_count in values['region'].items():
+    #                         total_count = age_count + gender_count + region_count
+    #                         writer.writerow([product, age_range, gender, region, total_count])
+    # sendAnEmail("Test", "test", "test", csv_file)
 
+response = {}
+response["cumulative"] = getStatusOfTransactions(campaignId)
+for i in ["Pepsodent", "Geisha", "Key"]:
+    print("----")
+    print(i)
+    response[i] = getStatusOfTransactions(campaignId, i)
+    print("\n")
 
-list_to_excel_csv(dataBody,'output.csv')
+pprint.pprint(response)
+# list_to_excel_csv(dataBody,'output.csv')
 
 
