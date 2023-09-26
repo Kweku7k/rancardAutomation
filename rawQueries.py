@@ -118,12 +118,13 @@ def getRewardData(campaignId):
     pipeline = [
         {
             "$match": {
-                "campaignId": campaignId
+                "campaignId": campaignId,
             }
         },
         {
             "$group": {
                 "_id": "$rewardType",
+                "amount":"$amount",
                 "count": {"$sum": 1}
             }
         }
