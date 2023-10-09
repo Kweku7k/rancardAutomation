@@ -62,5 +62,5 @@ def modify_function(value):
 # input_file = "input.csv"
 # output_file = "output.csv"
 
-modify_last_value('rewardSheet.csv', 'momodata.csv', checkMomoData)
+modify_last_value('loyaltyPoints.csv', 'LoyaltyPoints-WithNames.csv', checkMomoData)
 # print(checkMomoData('233545977791'))
